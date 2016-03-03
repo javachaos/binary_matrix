@@ -8,9 +8,9 @@
 #define _BINARY_MATRIX_H_
 
 typedef struct {
-    int num_rows;
-    int num_cols;
-    int* data;
+	int num_rows;
+	int num_cols;
+	int* data;
 } BinaryMatrix;
 
 /**
@@ -43,20 +43,19 @@ int CheckEntry(BinaryMatrix* M, int row, int col);
  */
 void PrintMatrix(BinaryMatrix* M);
 
-
 #endif /* _BINARY_MATRIX_H_ */
 /**
  * Set Kth binary bit in A to 1.
  */
-void  setBit( int A[ ],  int k );
+void setBit(int A[], int k);
 
 /**
  * Set Kth binary bit in A to 0.
  */
-void  clearBit( int A[ ],  int k );
+void clearBit(int A[], int k);
 
 /**
  * Test if Kth binary bit is 1 or 0.
  */
-int test( int A[ ],  int k );
+int test(int A[], int k);
 
