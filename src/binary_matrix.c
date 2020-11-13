@@ -7,16 +7,19 @@
 BinaryMatrix* ConstructBinaryMatrix(int num_rows, int num_cols) {
 	if (num_rows > 0 && num_cols > 0) {
 		BinaryMatrix *b = malloc(sizeof(BinaryMatrix));
-		b->num_cols = num_cols;
-		b->num_rows = num_rows;
-		b->data = NULL;
-		b->data = (int*) calloc(num_rows, (num_cols / BITS_PER_BYTE) + 1);
-		if (b->data == NULL) {
-			printf("Array too large, failed to allocate memory.");
-			DeleteBinaryMatrix(b);
-			exit(-1);
-		}
-		return b;
+		if (b != NULL) {
+            b->num_cols = num_cols;
+            b->num_rows = num_rows;
+            b->data = NULL;
+            b->data = (int*) calloc(num_rows, (num_cols / BITS_PER_BYTE) + 1);
+            if (b->data == NULL) {
+                printf("Array too large, failed to allocate memory.");
+                DeleteBinaryMatrix(b);
+                exit(-1);
+            }
+        }
+        return b;
+
 	} else {
 		printf(
 				"Error in CreateMatrix: number of rows and columns must be positive ending with a newline and exit the program.");
