@@ -1,8 +1,8 @@
 extraction:
   cpp:
      prepare:
-         packages:
-            - gcc-6
+        packages:
+          - gcc-6
      configure:
      index:
         build_command:
