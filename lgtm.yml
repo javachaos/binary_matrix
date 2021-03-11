@@ -1,0 +1,9 @@
+extraction:
+  cpp:
+     prepare:
+         packages:
+            - gcc-6
+     configure:
+     index:
+        build_command:
+        - ./src/build.sh
