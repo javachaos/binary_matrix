@@ -8,6 +8,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <signal.h>
+
+static volatile int keepRunning = 1;
+
+void intHandler(int dummy) {
+    keepRunning = 0;
+}
 
 int main(int argc, char *argv[]) {
 
@@ -27,6 +34,7 @@ int main(int argc, char *argv[]) {
 	    printf("Input out of bounds.\n");
  	    exit(1);
     }
+	signal(SIGINT, intHandler);
 
     struct timespec sleeptime;
     sleeptime.tv_sec = 0;
@@ -52,7 +60,7 @@ int main(int argc, char *argv[]) {
     }
 
 	int n = 0;
-	while (z++ < iter) {
+	while (z++ < iter && keepRunning) {
 		n = 0;//number of mutations per iteration
 		for (x = 0; x < height; x++) {
 			for (y = 0; y < width; y++) {
