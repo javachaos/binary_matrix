@@ -92,6 +92,26 @@ void PrintMatrix(BinaryMatrix* M) {
 	putchar('\n');
 }
 
+int CheckEqual(BinaryMatrix* M, BinaryMatrix* N) {
+	if (M->num_cols != N->num_cols || M->num_rows != N->num_cols) {
+		return 0;
+	}
+	for (int i = 0; i < sizeof(M->data); i++) {
+		if (M->data[i] != N->data[i]) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
+BinaryMatrix* clone(BinaryMatrix* M) {
+	BinaryMatrix* N = ConstructBinaryMatrix(M->num_rows, M->num_cols); 
+	for (int i = 0; i < sizeof(M->data); i++) {
+		N->data[i] = M->data[i];
+	}
+	return N;
+}
+
 void setBit(int* A, int k) {
 	A[k / 32] |= 1 << (k % (sizeof(int) * BITS_PER_BYTE));
 }

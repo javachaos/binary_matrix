@@ -39,6 +39,16 @@ void UpdateEntry(BinaryMatrix* M, int row, int col, int c);
 int CheckEntry(BinaryMatrix* M, int row, int col);
 
 /**
+ * Check if two binary matricies are identical bit for bit
+ */
+int CheckEqual(BinaryMatrix* M, BinaryMatrix* N);
+
+/**
+ * Deep copy a BinaryMatrix
+ */
+BinaryMatrix* clone(BinaryMatrix* M);
+
+/**
  * Print the matrix
  */
 void PrintMatrix(BinaryMatrix* M);

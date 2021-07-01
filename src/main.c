@@ -12,7 +12,7 @@
 int main(int argc, char *argv[]) {
 
    if (argc != 4) {
-       printf("a.out size_x size_y iterations   -- as ints strictly less than 500 \n");
+       printf("a.out size_x size_y iter_count   -- as ints strictly less than 500 for x and y, and 50000 for iters.\n");
 	   exit(1);
    }
    char *a = argv[1];
@@ -21,8 +21,10 @@ int main(int argc, char *argv[]) {
    int size_x = atoi(a);
    int size_y = atoi(b);
    int iter = atoi(c);
-   if (size_x <= 0 || size_y <= 0 || size_x > 500 || size_y > 500) {
-	   printf("Input out of bounds (0,0) (500,500) \n");
+   if (size_x <= 0 || size_y <= 0 
+   || size_x > 500 || size_y > 500
+   || iter < 0     || iter > 50000) {
+	   printf("Input out of bounds.\n");
 	   exit(1);
    }
 
@@ -38,18 +40,19 @@ int main(int argc, char *argv[]) {
 	int width = M->num_cols - 1;
 	int height = M->num_rows - 1;
 	srand((unsigned) time(&t));
+
     //Initialize the matrix randomly.
     for (x = 0; x < width; x++) {
       for (y = 0; y < height; y++) {
-         int v = (rand() % 100) > 70 ? 1 : 0;
+         int v = (rand() % 100) > 90 ? 1 : 0;
 		 if (v) {
 	         UpdateEntry(M, y, x, v);
 		 }
       }
     }
-
-
+	int num_blank_iters = 0;//Count the number of times no mutations happen.
 	while (z++ < iter) {
+		int n = 0;//number of mutations per iteration
 		for (x = 0; x < height; x++) {
 			for (y = 0; y < width; y++) {
 				int k = 0;
@@ -64,19 +67,25 @@ int main(int argc, char *argv[]) {
 				if (CheckEntry(M, x, y)) {
 					if (k < 2 || k > 3) {
 						UpdateEntry(M, x, y, 0);
+						n++;
 					}
 				} else {
 					if (k == 3) {
 						UpdateEntry(M, x, y, 1);
+						n++;
 					}
 				}
 			}
 		}
-
+		if (n == 0) {
+			num_blank_iters++;
+		}
+		if (num_blank_iters > 1) {
+			break;
+		}
 		PrintMatrix(M);
 		nanosleep(&sleeptime, NULL);
 	}
-
 	DeleteBinaryMatrix(M);
 
 	return 0;
