@@ -11,27 +11,27 @@
 
 int main(int argc, char *argv[]) {
 
-   if (argc != 4) {
-       printf("a.out size_x size_y iter_count   -- as ints strictly less than 500 for x and y, and 50000 for iters.\n");
-	   exit(1);
-   }
-   char *a = argv[1];
-   char *b = argv[2];
-   char *c = argv[3];
-   int size_x = atoi(a);
-   int size_y = atoi(b);
-   int iter = atoi(c);
-   if (size_x <= 0 || size_y <= 0 
-   || size_x > 500 || size_y > 500
-   || iter < 0     || iter > 50000) {
-	   printf("Input out of bounds.\n");
-	   exit(1);
-   }
+    if (argc != 4) {
+        printf("a.out size_x size_y iter_count   -- as ints strictly less than 500 for x and y, and 50000 for iters.\n");
+	    exit(1);
+    }
+    char *a = argv[1];
+    char *b = argv[2];
+    char *c = argv[3];
+    int size_x = atoi(a);
+    int size_y = atoi(b);
+    int iter = atoi(c);
+    if (size_x <= 0 || size_y <= 0 
+    || size_x > 500 || size_y > 500
+    || iter < 0     || iter > 50000) {
+	    printf("Input out of bounds.\n");
+ 	    exit(1);
+    }
 
-   struct timespec sleeptime;
-   sleeptime.tv_sec = 0;
-   sleeptime.tv_nsec = 100000000;
-   time_t t;
+    struct timespec sleeptime;
+    sleeptime.tv_sec = 0;
+    sleeptime.tv_nsec = 50000000;
+    time_t t;
 
 	BinaryMatrix* M = ConstructBinaryMatrix(size_x, size_y);
 
@@ -50,9 +50,10 @@ int main(int argc, char *argv[]) {
 		 }
       }
     }
-	int num_blank_iters = 0;//Count the number of times no mutations happen.
+
+	int n = 0;
 	while (z++ < iter) {
-		int n = 0;//number of mutations per iteration
+		n = 0;//number of mutations per iteration
 		for (x = 0; x < height; x++) {
 			for (y = 0; y < width; y++) {
 				int k = 0;
@@ -68,25 +69,28 @@ int main(int argc, char *argv[]) {
 					if (k < 2 || k > 3) {
 						UpdateEntry(M, x, y, 0);
 						n++;
+					} else if (k == 2 || k == 3) {
+						UpdateEntry(M, x, y, 1);
 					}
 				} else {
 					if (k == 3) {
 						UpdateEntry(M, x, y, 1);
 						n++;
+					} else {
+						UpdateEntry(M, x, y, 0);
 					}
 				}
 			}
 		}
 		if (n == 0) {
-			num_blank_iters++;
-		}
-		if (num_blank_iters > 1) {
 			break;
 		}
 		PrintMatrix(M);
 		nanosleep(&sleeptime, NULL);
+		printf("\nNumber of mutations: %d\n", n);
 	}
 	DeleteBinaryMatrix(M);
+	printf("\nTotal number of iterations run: %d\n", z-1);
 
 	return 0;
 }
