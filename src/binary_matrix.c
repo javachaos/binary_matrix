@@ -4,14 +4,14 @@
 #include <stdlib.h>
 #define BITS_PER_BYTE 8
 
-BinaryMatrix* ConstructBinaryMatrix(int num_rows, int num_cols) {
-	if (num_rows > 0 && num_cols > 0) {
+BinaryMatrix* ConstructBinaryMatrix(int rows, int cols) {
+	if (rows > 0 && cols > 0) {
 		BinaryMatrix *b = malloc(sizeof(BinaryMatrix));
 		if (b != NULL) {
-            b->num_cols = num_cols;
-            b->num_rows = num_rows;
+            b->num_cols = cols;
+            b->num_rows = rows;
             b->data = NULL;
-            b->data = (int*) calloc(num_rows, (num_cols / BITS_PER_BYTE) + 1);
+            b->data = (int*) calloc(rows, (cols / BITS_PER_BYTE) + 1);
             if (b->data == NULL) {
                 printf("Array too large, failed to allocate memory.");
                 DeleteBinaryMatrix(b);
@@ -21,7 +21,7 @@ BinaryMatrix* ConstructBinaryMatrix(int num_rows, int num_cols) {
         return b;
 
 	} else {
-		printf("Error in CreateMatrix: number of rows and columns must be positive ending with a newline and exit the program.");
+		printf("Error in CreateMatrix: number of rows and columns must be positive ending with a newline and exiting the program.");
 		exit(-1);
 	}
 }
@@ -39,12 +39,12 @@ void UpdateEntry(BinaryMatrix* M, int row, int col, int c) {
 			clearBit(M->data, row * M->num_cols + col);
 		} else {
 			printf(
-					"Error in UpdateEntry: content must be 0 or 1 ending with a newline and exit the program.\n");
+					"Error in UpdateEntry: content must be 0 or 1 ending with a newline and exiting the program.\n");
 			exit(-1);
 		}
 	} else {
 		printf(
-				"Error in UpdateEntry: index out of bounds ending with a newline and exit the program.\n");
+				"Error in UpdateEntry: index out of bounds ending with a newline and exiting the program.\n");
 		exit(-1);
 	}
 }
@@ -52,7 +52,7 @@ void UpdateEntry(BinaryMatrix* M, int row, int col, int c) {
 int IsMatrixIndex(BinaryMatrix* M, int row, int col) {
 	if (M == NULL) {
 		printf(
-				"IsMatrixIndex Error: NULL parameter passed ending with a newline and exit the program.\n");
+				"IsMatrixIndex Error: NULL parameter passed ending with a newline and exiting program.\n");
 		exit(-1);
 	} else {
 		return row < M->num_rows && col < M->num_cols && col >= 0 && row >= 0;
@@ -69,6 +69,7 @@ int CheckEntry(BinaryMatrix* M, int row, int col) {
 
 void PrintMatrix(BinaryMatrix* M) {
 	int i, j, k;
+	//Draw first line for this snapshot
 	for (k = 0; k < M->num_cols; k++) {
 		putchar('-');
 	}
@@ -84,6 +85,7 @@ void PrintMatrix(BinaryMatrix* M) {
 		}
 	}
 	putchar('\n');
+	//Draw the bottom line for this snapshot
 	for (k = j; k > 0; k--) {
 		putchar('-');
 	}

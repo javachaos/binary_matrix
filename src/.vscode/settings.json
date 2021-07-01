@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "stdio.h": "c",
+        "binary_matrix.h": "c"
+    }
+}

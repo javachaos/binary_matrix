@@ -4,39 +4,54 @@
  *  Created on: Mar 2, 2016
  *      Author: fred
  */
-#define _XOPEN_SOURCE 500
 #include "binary_matrix.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#define NUM_EPOCHS 500
 
-int main(void) {
+int main(int argc, char *argv[]) {
+
+   if (argc != 4) {
+       printf("a.out size_x size_y iterations   -- as ints strictly less than 500 \n");
+	   exit(1);
+   }
+   char *a = argv[1];
+   char *b = argv[2];
+   char *c = argv[3];
+   int size_x = atoi(a);
+   int size_y = atoi(b);
+   int iter = atoi(c);
+   if (size_x <= 0 || size_y <= 0 || size_x > 500 || size_y > 500) {
+	   printf("Input out of bounds (0,0) (500,500) \n");
+	   exit(1);
+   }
 
    struct timespec sleeptime;
-   sleeptime.tv_sec = 1;
+   sleeptime.tv_sec = 0;
+   sleeptime.tv_nsec = 100000000;
+   time_t t;
 
-	BinaryMatrix* M = ConstructBinaryMatrix(40, 80);
+	BinaryMatrix* M = ConstructBinaryMatrix(size_x, size_y);
 
 	int x, y, z = 0;
 
-	UpdateEntry(M, 1, 1, 1);
-	UpdateEntry(M, 2, 2, 1);
-	UpdateEntry(M, 2, 1, 1);
-	UpdateEntry(M, 3, 1, 1);
-	UpdateEntry(M, 2, 0, 1);
-	UpdateEntry(M, 3, 3, 1);
-	UpdateEntry(M, 4, 4, 1);
-	UpdateEntry(M, 2, 3, 1);
-	UpdateEntry(M, 0, 0, 1);
-	UpdateEntry(M, 0, 3, 1);
-	UpdateEntry(M, 4, 3, 1);
-	UpdateEntry(M, 0, 2, 1);
-	UpdateEntry(M, 2, 4, 1);
+	int width = M->num_cols - 1;
+	int height = M->num_rows - 1;
+	srand((unsigned) time(&t));
+    //Initialize the matrix randomly.
+    for (x = 0; x < width; x++) {
+      for (y = 0; y < height; y++) {
+         int v = (rand() % 100) > 70 ? 1 : 0;
+		 if (v) {
+	         UpdateEntry(M, y, x, v);
+		 }
+      }
+    }
 
-	while (z++ < NUM_EPOCHS) {
-		for (y = 0; y < M->num_cols; y++) {
-			for (x = 0; x < M->num_rows; x++) {
+
+	while (z++ < iter) {
+		for (x = 0; x < height; x++) {
+			for (y = 0; y < width; y++) {
 				int k = 0;
 				k += CheckEntry(M, x - 1, y - 1);
 				k += CheckEntry(M, x, y - 1);
