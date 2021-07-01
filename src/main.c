@@ -3,6 +3,8 @@
  *
  *  Created on: Mar 2, 2016
  *      Author: fred
+ *  Updated on: Jul 1, 2021
+ *      Author: fred
  */
 #include "binary_matrix.h"
 #include <stdio.h>

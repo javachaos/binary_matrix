@@ -2,8 +2,8 @@ extraction:
   cpp:
      prepare:
         packages:
-          - gcc-6
+          - gcc-10
      configure:
      index:
         build_command:
-        - ./src/build.sh
+        - make
