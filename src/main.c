@@ -4,13 +4,17 @@
  *  Created on: Mar 2, 2016
  *      Author: fred
  */
-
+#define _XOPEN_SOURCE 500
 #include "binary_matrix.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #define NUM_EPOCHS 500
 
 int main(void) {
+
+   struct timespec sleeptime;
+   sleeptime.tv_sec = 1;
 
 	BinaryMatrix* M = ConstructBinaryMatrix(40, 80);
 
@@ -55,7 +59,7 @@ int main(void) {
 		}
 
 		PrintMatrix(M);
-		usleep(100000);
+		nanosleep(&sleeptime, NULL);
 	}
 
 	DeleteBinaryMatrix(M);

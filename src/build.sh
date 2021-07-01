@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gcc -Wall ./main.c
+gcc -Wall ./binary_matrix.h ./binary_matrix.c ./main.c

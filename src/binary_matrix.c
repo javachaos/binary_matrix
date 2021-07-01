@@ -21,8 +21,7 @@ BinaryMatrix* ConstructBinaryMatrix(int num_rows, int num_cols) {
         return b;
 
 	} else {
-		printf(
-				"Error in CreateMatrix: number of rows and columns must be positive ending with a newline and exit the program.");
+		printf("Error in CreateMatrix: number of rows and columns must be positive ending with a newline and exit the program.");
 		exit(-1);
 	}
 }
