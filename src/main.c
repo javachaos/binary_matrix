@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
 		printf ("CPU has RDRAND support, using RDRAND.\n");
 		rdrand_support = 1;
 	} else {
-		printf ("CPU does not support RDRAND using rand() function.\n")
+		printf ("CPU does not support RDRAND using rand() function.\n");
 	}
 	if (argc != 4)
 	{
