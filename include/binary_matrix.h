@@ -3,21 +3,25 @@
  * Name / StudentID
  * An implementation of a Binary Matrix
  */
-
 #ifndef _BINARY_MATRIX_H_
 #define _BINARY_MATRIX_H_
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#define BITS_PER_BYTE 8
+
 typedef struct
 {
-	int num_rows;
-	int num_cols;
+	uint8_t num_rows;
+	uint8_t num_cols;
 	int *data;
 } BinaryMatrix;
 
 /**
  * Allocate a bit matrix in the least amount of storage.
  */
-BinaryMatrix *ConstructBinaryMatrix(int num_rows, int num_cols);
+BinaryMatrix *ConstructBinaryMatrix(uint8_t num_rows, uint8_t num_cols);
 
 /**
  * Free the memory allocated to store the bit matrix.
@@ -27,17 +31,17 @@ void DeleteBinaryMatrix(BinaryMatrix *M);
 /**
  * Ensure the index of row,col is a matrix index.
  */
-int IsMatrixIndex(BinaryMatrix *M, int row, int col);
+int IsMatrixIndex(BinaryMatrix *M, uint8_t row, uint8_t col);
 
 /**
  * Update an entry with value c.
  */
-void UpdateEntry(BinaryMatrix *M, int row, int col, int c);
+void UpdateEntry(BinaryMatrix *M, uint8_t row, uint8_t col, uint8_t c);
 
 /**
  * Check the value of an entry.
  */
-int CheckEntry(BinaryMatrix *M, int row, int col);
+int CheckEntry(BinaryMatrix *M, uint8_t row, uint8_t col);
 
 /**
  * Check if two binary matricies are identical bit for bit

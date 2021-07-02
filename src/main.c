@@ -24,16 +24,16 @@ int main(int argc, char *argv[])
 
 	if (argc != 4)
 	{
-		printf("a.out size_x size_y iter_count   -- as ints strictly less than 500 for x and y, and 50000 for iters.\n");
+		printf("a.out size_x size_y iter_count   -- as ints strictly greater than 4 and less than 255 for x and y, and 65535 for iters.\n");
 		exit(1);
 	}
 	char *a = argv[1];
 	char *b = argv[2];
 	char *c = argv[3];
-	int size_x = atoi(a);
-	int size_y = atoi(b);
+	uint8_t size_x = atoi(a);
+	uint8_t size_y = atoi(b);
 	int iter = atoi(c);
-	if (size_x <= 0 || size_y <= 0 || size_x > 500 || size_y > 500 || iter < 0 || iter > 50000)
+	if (size_x < 4 || size_y < 4 || size_x > UINT8_MAX || size_y > UINT8_MAX || iter < 0 || iter > UINT16_MAX)
 	{
 		printf("Input out of bounds.\n");
 		exit(1);
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 
 	struct timespec sleeptime;
 	sleeptime.tv_sec = 0;
-	sleeptime.tv_nsec = 50000000;
+	sleeptime.tv_nsec = 5000000;
 	time_t t;
 
 	BinaryMatrix *M = ConstructBinaryMatrix(size_x, size_y);

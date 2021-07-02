@@ -10,7 +10,7 @@ LIBS=-lm
 _DEPS = binary_matrix.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = main.o binary_matrix.o 
+_OBJ = main.o binary_matrix.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 

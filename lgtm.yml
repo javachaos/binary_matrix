@@ -2,7 +2,7 @@ extraction:
   cpp:
      prepare:
         packages:
-          - gcc-10
+          - gcc-9
      configure:
      index:
         build_command:
