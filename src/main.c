@@ -14,6 +14,77 @@
 #include <math.h>
 #include <immintrin.h>
 
+#define DRNG_NO_SUPPORT	0x0	/* For clarity */
+#define DRNG_HAS_RDRAND	0x1
+#define DRNG_HAS_RDSEED	0x2
+
+typedef struct cpuid_struct {
+	unsigned int eax;
+	unsigned int ebx;
+	unsigned int ecx;
+	unsigned int edx;
+} cpuid_t;
+
+int _is_intel_cpu ()
+{
+	static int intel_cpu= -1;
+	cpuid_t info;
+
+	if ( intel_cpu == -1 ) {
+		cpuid(&info, 0, 0);
+
+		if (
+			memcmp((char *) &info.ebx, "Genu", 4) ||
+			memcmp((char *) &info.edx, "ineI", 4) ||
+			memcmp((char *) &info.ecx, "ntel", 4)
+		) {
+			intel_cpu= 0;
+		} else {
+			intel_cpu= 1;
+		}
+	}
+
+	return intel_cpu;
+}
+
+void cpuid (cpuid_t *info, unsigned int leaf, unsigned int subleaf)
+{
+	asm volatile("cpuid"
+	: "=a" (info->eax), "=b" (info->ebx), "=c" (info->ecx), "=d" (info->edx)
+	: "a" (leaf), "c" (subleaf)
+	);
+}
+
+int get_drng_support ()
+{
+	static int drng_features= -1;
+
+	/* So we don't call cpuid multiple times for 
+	 * the same information */
+
+	if ( drng_features == -1 ) {
+		drng_features= DRNG_NO_SUPPORT;
+
+		if ( _is_intel_cpu() ) {
+			cpuid_t info;
+
+			cpuid(&info, 1, 0);
+
+			if ( (info.ecx & 0x40000000) == 0x40000000 ) {
+				drng_features|= DRNG_HAS_RDRAND;
+			}
+
+			cpuid(&info, 7, 0);
+
+			if ( (info.ebx & 0x40000) == 0x40000 ) {
+				drng_features|= DRNG_HAS_RDSEED;
+			}
+		} 
+	}
+
+	return drng_features;
+}
+
 static volatile int keepRunning = 1;
 
 void intHandler(int dummy)
@@ -59,8 +130,14 @@ void drawGasket(BinaryMatrix *M, uint8_t x, uint8_t y, float dimension) {
 
 int main(int argc, char *argv[])
 {
-
 	signal(SIGINT, intHandler);
+	uint8_t rdrand_support = 0;
+    if (get_drng_support ()) {
+		printf ("CPU has RDRAND support, using RDRAND.\n");
+		rdrand_support = 1;
+	} else {
+		printf ("CPU does not support RDRAND using rand() function.\n")
+	}
 	if (argc != 4)
 	{
 	    BinaryMatrix *M = ConstructBinaryMatrix(50, 50);
@@ -95,14 +172,18 @@ int main(int argc, char *argv[])
 	int height = M->num_rows - 1;
 
 
-    unsigned long long result = 0ULL;
+
+    unsigned int result = 0ULL;
 	//Initialize the matrix randomly.
 	for (x = 0; x < width; x++)
 	{
 		for (y = 0; y < height; y++)
 		{
-
-            int rc = _rdrand64_step (&result);
+			if (rdrand_support) {
+                int rc = _rdrand32_step (&result);
+	 	    } else {
+				 result = rand();
+			}
 			int v = (result % 100) > 90 ? 1 : 0;
 			if (v)
 			{
