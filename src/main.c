@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <signal.h>
+#include <math.h>
+#include <immintrin.h>
 
 static volatile int keepRunning = 1;
 
@@ -19,14 +21,56 @@ void intHandler(int dummy)
 	keepRunning = 0;
 }
 
+void drawRect(BinaryMatrix *M, uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
+	if (x > M->num_cols || y > M->num_rows 
+	 || x < 0 || y < 0
+	 || w > M->num_cols || h > M->num_rows 
+	 || w < 0 || h < 0) {
+		return;
+	}
+
+	//Draw X axis
+	for (int i = x; i < w; i++) {
+		UpdateEntry(M, y, i, 1);
+	}
+	//Draw Y axis
+	for (int j = y; j < h; j++) {
+		UpdateEntry(M, j, x, 1);
+	}
+	for (int i = x; i < w; i++) {
+		UpdateEntry(M, y+h-1, i, 1);
+	}
+	for (int j = y; j < h; j++) {
+		UpdateEntry(M, j, x+w-1, 1);
+	}
+    UpdateEntry(M, y+h-1, x+w-1, 1);
+}
+
+void drawGasket(BinaryMatrix *M, uint8_t x, uint8_t y, float dimension) {
+	if (dimension <= 4) {
+		drawRect(M, x, y, round(dimension), round(dimension));
+	} else {
+		float newDimension = dimension / 2;
+		drawGasket(M, x, y, newDimension);
+		drawGasket(M, x + newDimension, y, newDimension);
+		drawGasket(M, x + newDimension, y + newDimension, newDimension);
+	}
+}
+
 int main(int argc, char *argv[])
 {
 
+	signal(SIGINT, intHandler);
 	if (argc != 4)
 	{
+	    BinaryMatrix *M = ConstructBinaryMatrix(50, 50);
+		drawGasket(M,0,0,30);
+	    PrintMatrix(M);
+	    DeleteBinaryMatrix(M);
 		printf("a.out size_x size_y iter_count   -- as ints strictly greater than 4 and less than 255 for x and y, and 65535 for iters.\n");
 		exit(1);
-	}
+	} else {
+	
 	char *a = argv[1];
 	char *b = argv[2];
 	char *c = argv[3];
@@ -38,12 +82,10 @@ int main(int argc, char *argv[])
 		printf("Input out of bounds.\n");
 		exit(1);
 	}
-	signal(SIGINT, intHandler);
 
 	struct timespec sleeptime;
 	sleeptime.tv_sec = 0;
-	sleeptime.tv_nsec = 5000000;
-	time_t t;
+	sleeptime.tv_nsec = 50000000;
 
 	BinaryMatrix *M = ConstructBinaryMatrix(size_x, size_y);
 
@@ -51,14 +93,17 @@ int main(int argc, char *argv[])
 
 	int width = M->num_cols - 1;
 	int height = M->num_rows - 1;
-	srand((unsigned)time(&t));
 
+
+    unsigned long long result = 0ULL;
 	//Initialize the matrix randomly.
 	for (x = 0; x < width; x++)
 	{
 		for (y = 0; y < height; y++)
 		{
-			int v = (rand() % 100) > 90 ? 1 : 0;
+
+            int rc = _rdrand64_step (&result);
+			int v = (result % 100) > 90 ? 1 : 0;
 			if (v)
 			{
 				UpdateEntry(M, y, x, v);
@@ -117,8 +162,11 @@ int main(int argc, char *argv[])
 		nanosleep(&sleeptime, NULL);
 		printf("\nNumber of mutations: %d\n", n);
 	}
+	PrintMatrix(M);
 	DeleteBinaryMatrix(M);
 	printf("\nTotal number of iterations run: %d\n", z - 1);
 
 	return 0;
+	}
 }
+
