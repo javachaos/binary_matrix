@@ -6,13 +6,14 @@
  *  Updated on: Jul 1, 2021
  *      Author: fred
  */
-#include "binary_matrix.h"
+#include "../include/binary_matrix.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <signal.h>
 #include <math.h>
 #include <immintrin.h>
+#include <string.h>
 
 #define DRNG_NO_SUPPORT	0x0	/* For clarity */
 #define DRNG_HAS_RDRAND	0x1
@@ -24,6 +25,14 @@ typedef struct cpuid_struct {
 	unsigned int ecx;
 	unsigned int edx;
 } cpuid_t;
+
+void cpuid (cpuid_t *info, unsigned int leaf, unsigned int subleaf)
+{
+	asm volatile("cpuid"
+	: "=a" (info->eax), "=b" (info->ebx), "=c" (info->ecx), "=d" (info->edx)
+	: "a" (leaf), "c" (subleaf)
+	);
+}
 
 int _is_intel_cpu ()
 {
@@ -47,13 +56,7 @@ int _is_intel_cpu ()
 	return intel_cpu;
 }
 
-void cpuid (cpuid_t *info, unsigned int leaf, unsigned int subleaf)
-{
-	asm volatile("cpuid"
-	: "=a" (info->eax), "=b" (info->ebx), "=c" (info->ecx), "=d" (info->edx)
-	: "a" (leaf), "c" (subleaf)
-	);
-}
+
 
 int get_drng_support ()
 {
