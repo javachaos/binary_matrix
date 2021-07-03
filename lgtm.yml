@@ -6,4 +6,5 @@ extraction:
      configure:
      index:
         build_command:
+        - make clean
         - make
