@@ -1,10 +1,10 @@
 extraction:
-  cpp:
-     prepare:
-        packages:
+   cpp:
+      prepare:
+         packages:
           - gcc-9
-     configure:
-     index:
-        build_command:
-        - make clean
-        - make
+      configure:
+      index:
+         build_command:
+          - make clean
+          - make
