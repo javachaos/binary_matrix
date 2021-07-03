@@ -1,5 +1,5 @@
 #include "binary_matrix.h"
- 
+
 BinaryMatrix *ConstructBinaryMatrix(uint8_t rows, uint8_t cols)
 {
 	if (rows > 0 && cols > 0)
@@ -135,5 +135,5 @@ void clearBit(int *A, int k)
 
 int test(int *A, int k)
 {
-	return ((A[k / 32] & (1 << (k % (32) ))) != 0);
+	return ((A[k / 32] & (1 << (k % (32)))) != 0);
 }
