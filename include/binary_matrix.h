@@ -10,18 +10,19 @@
 #include <stdlib.h>
 #include <stdint.h>
 #define BITS_PER_BYTE 8
+#define BITS_PER_INT 32
 
 typedef struct
 {
-	uint8_t num_rows;
-	uint8_t num_cols;
-	int *data;
+	uint16_t num_rows;
+	uint16_t num_cols;
+	uint32_t *data;
 } BinaryMatrix;
 
 /**
  * Allocate a bit matrix in the least amount of storage.
  */
-BinaryMatrix *ConstructBinaryMatrix(uint8_t num_rows, uint8_t num_cols);
+BinaryMatrix *ConstructBinaryMatrix(uint16_t num_rows, uint16_t num_cols);
 
 /**
  * Free the memory allocated to store the bit matrix.
@@ -31,17 +32,17 @@ void DeleteBinaryMatrix(BinaryMatrix *M);
 /**
  * Ensure the index of row,col is a matrix index.
  */
-int IsMatrixIndex(BinaryMatrix *M, uint8_t row, uint8_t col);
+int IsMatrixIndex(BinaryMatrix *M, uint16_t row, uint16_t col);
 
 /**
  * Update an entry with value c.
  */
-void UpdateEntry(BinaryMatrix *M, uint8_t row, uint8_t col, uint8_t c);
+void UpdateEntry(BinaryMatrix *M, uint16_t row, uint16_t col, uint8_t c);
 
 /**
  * Check the value of an entry.
  */
-int CheckEntry(BinaryMatrix *M, uint8_t row, uint8_t col);
+int CheckEntry(BinaryMatrix *M, uint16_t row, uint16_t col);
 
 /**
  * Check if two binary matricies are identical bit for bit
@@ -62,14 +63,14 @@ void PrintMatrix(BinaryMatrix *M);
 /**
  * Set Kth binary bit in A to 1.
  */
-void setBit(int A[], int k);
+void setBit(uint32_t A[], uint32_t k);
 
 /**
  * Set Kth binary bit in A to 0.
  */
-void clearBit(int A[], int k);
+void clearBit(uint32_t A[], uint32_t k);
 
 /**
  * Test if Kth binary bit is 1 or 0.
  */
-int test(int A[], int k);
+int test(uint32_t A[], uint32_t k);

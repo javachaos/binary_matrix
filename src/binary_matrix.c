@@ -1,6 +1,6 @@
 #include "binary_matrix.h"
 
-BinaryMatrix *ConstructBinaryMatrix(uint8_t rows, uint8_t cols)
+BinaryMatrix *ConstructBinaryMatrix(uint16_t rows, uint16_t cols)
 {
 	if (rows > 0 && cols > 0)
 	{
@@ -10,7 +10,7 @@ BinaryMatrix *ConstructBinaryMatrix(uint8_t rows, uint8_t cols)
 			b->num_cols = cols;
 			b->num_rows = rows;
 			b->data = NULL;
-			b->data = (int *)calloc(rows, (cols / BITS_PER_BYTE) + 1);
+			b->data = (uint32_t *)calloc(rows, (cols / BITS_PER_BYTE) + 1);
 			if (b->data == NULL)
 			{
 				printf("Array too large, failed to allocate memory.");
@@ -33,7 +33,7 @@ void DeleteBinaryMatrix(BinaryMatrix *M)
 	free(M);
 }
 
-void UpdateEntry(BinaryMatrix *M, uint8_t row, uint8_t col, uint8_t c)
+void UpdateEntry(BinaryMatrix *M, uint16_t row, uint16_t col, uint8_t c)
 {
 	if (IsMatrixIndex(M, row, col))
 	{
@@ -49,6 +49,9 @@ void UpdateEntry(BinaryMatrix *M, uint8_t row, uint8_t col, uint8_t c)
 		{
 			printf(
 				"Error in UpdateEntry: content must be 0 or 1 ending with a newline and exiting the program.\n");
+			if (M != NULL) {
+			    DeleteBinaryMatrix(M);
+		    }
 			exit(-1);
 		}
 	}
@@ -56,25 +59,23 @@ void UpdateEntry(BinaryMatrix *M, uint8_t row, uint8_t col, uint8_t c)
 	{
 		printf(
 			"Error in UpdateEntry: index out of bounds ending with a newline and exiting the program.\n");
+		if (M != NULL) {
+			DeleteBinaryMatrix(M);
+		}
 		exit(-1);
 	}
 }
 
-int IsMatrixIndex(BinaryMatrix *M, uint8_t row, uint8_t col)
+int IsMatrixIndex(BinaryMatrix *M, uint16_t row, uint16_t col)
 {
-	if (M == NULL)
-	{
-		printf(
-			"IsMatrixIndex Error: NULL parameter passed ending with a newline and exiting program.\n");
-		exit(-1);
-	}
-	else
-	{
-		return row < M->num_rows && col < M->num_cols && col >= 0 && row >= 0;
-	}
+	return (M != NULL)
+	    && (row < M->num_rows)
+	    && (col < M->num_cols)
+		&& (col >= 0)
+		&& (row >= 0);
 }
 
-int CheckEntry(BinaryMatrix *M, uint8_t row, uint8_t col)
+int CheckEntry(BinaryMatrix *M, uint16_t row, uint16_t col)
 {
 	if (IsMatrixIndex(M, row, col))
 	{
@@ -119,21 +120,17 @@ void PrintMatrix(BinaryMatrix *M)
 	putchar('\n');
 }
 
-// How this works.
-// Storing bits into an int array.
-//http://www.mathcs.emory.edu/~cheung/Courses/255/Syllabus/1-C-intro/bit-array.html
-//
-void setBit(int *A, int k)
+void setBit(uint32_t *A, uint32_t k)
 {
-	A[k / 32] |= 1 << (k % (32));
+	A[k / BITS_PER_INT] |= 1 << (k % (BITS_PER_INT));
 }
 
-void clearBit(int *A, int k)
+void clearBit(uint32_t *A, uint32_t k)
 {
-	A[k / 32] &= ~(1 << (k % (32)));
+	A[k / BITS_PER_INT] &= ~(1 << (k % (BITS_PER_INT)));
 }
 
-int test(int *A, int k)
+int test(uint32_t *A, uint32_t k)
 {
-	return ((A[k / 32] & (1 << (k % (32)))) != 0);
+	return ((A[k / BITS_PER_INT] & (1 << (k % (BITS_PER_INT)))) != 0);
 }

@@ -1,2 +1,12 @@
 /Debug/
 /.vscode/
+
+*~
+*.o
+*.lst
+*.o
+*.eep
+*.lss
+*.map
+*.sym
+src/obj/*.o
